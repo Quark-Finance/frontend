@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { DynamicContextProvider, DynamicNav, DynamicConnectButton, ThemeData } from "@dynamic-labs/sdk-react-core";
+import { DynamicContextProvider, ThemeData } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { createConfig, WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -14,8 +14,6 @@ import { StarknetWalletConnectors } from "@dynamic-labs/starknet";
 import { FlowWalletConnectors } from "@dynamic-labs/flow";
 
 import { useTheme } from "next-themes";
-import { useThemeContext } from "@/components/context/themeProvider";
-import { useEffect, useState } from "react";
 
 const config = createConfig({
   chains: [mainnet],
@@ -28,26 +26,14 @@ const config = createConfig({
 const queryClient = new QueryClient();
 
 export default function DynamicProvider({ children }: { children: React.ReactNode }) {
-  const [isMounted, setIsMounted] = useState(false);
   const { theme } = useTheme() as { theme: ThemeData | undefined };
-  const { themeColor } = useThemeContext();
-
-  useEffect(() => {
-    if (!isMounted) {
-      setIsMounted(true);
-    }
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
 
   return (
     <DynamicContextProvider
       theme={theme || 'dark'}
       settings={{
-        environmentId: "2db26563-e046-455a-954c-9adb2919a4e0",
-        appName: "Dynamic Testing",
+        environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENV_ID as string,
+        appName: "Quark",
         walletConnectors: [
           BitcoinWalletConnectors,
           EthereumWalletConnectors,

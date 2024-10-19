@@ -1,25 +1,15 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
-import { Header } from '@/components/Header'
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import { Header } from '@/components/Header';
 
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
-  const { user } = useDynamicContext()
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  if (!isClient) {
-    return null // Prevent SSR flash
-  }
+  const { user } = useDynamicContext();
 
   return (
     <>
-      {user && <Header />}
+      {user ? <Header /> : null}
       {children}
     </>
-  )
+  );
 }

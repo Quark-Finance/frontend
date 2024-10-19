@@ -7,7 +7,6 @@ import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { useTheme } from 'next-themes';
 
 import Meteors from '@/components/ui/meteors';
-import Particles from '@/components/ui/particles';
 
 const TypingAnimation = ({ words }: { words: string[] }) => {
   const [currentWord, setCurrentWord] = useState('');
@@ -38,8 +37,8 @@ const TypingAnimation = ({ words }: { words: string[] }) => {
 export default function LandingPage() {
   const oneLiners = [
     'universal liquidity',
-    'Cross-chain DeFi',
-    'Seamless asset management',
+    'cross-chain DeFi',
+    'seamless asset management',
   ];
 
   const { user, setShowAuthFlow } = useDynamicContext();
@@ -64,13 +63,6 @@ export default function LandingPage() {
   return (
     <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-background/50 text-foreground">
       <Meteors number={10} />
-      <Particles
-        className="absolute inset-0"
-        quantity={40}
-        ease={95}
-        color={color}
-        refresh
-      />
       <div className="z-10 text-center">
         <div className="flex items-center justify-center mb-2">
           <Image
@@ -78,7 +70,8 @@ export default function LandingPage() {
             alt="Quark Logo"
             width={300}
             height={300}
-            className="dark:invert"
+            priority
+            className="dark:invert dark:drop-shadow-[0_0_0.3rem_#ffffff70]"
           />
         </div>
         <h2 className="text-3xl mb-8">
