@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from '@/components/ui/progress'
 import { CheckCircle2, ChevronRight, ChevronLeft, User, TrendingUp, Coins } from 'lucide-react'
 import { questions } from '@/lib/formulaireQuestions'
+import { computeRiskProfile } from '@/lib/lit/computeRiskProfile'
 
 type FormData = Record<string, string>
 
@@ -60,17 +61,21 @@ export default function InvestmentProfileForm() {
     // Submit data to backend
   }
 
+  // const testAPI = async () => {
+  //   console.log('Testing API...')
+  //   const response = await fetch('/api/generate-score', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ message: 'What is the meaning of life?' }),
+  //   })
+  //   const data = await response.json()
+  //   console.log(data)
+  // }
+
   const testAPI = async () => {
-    console.log('Testing API...')
-    const response = await fetch('/api/generate-score', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: 'What is the meaning of life?' }),
-    })
-    const data = await response.json()
-    console.log(data)
+    const data = computeRiskProfile;
   }
 
   const currentStepIndex = step
