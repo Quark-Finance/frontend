@@ -3,10 +3,10 @@ import type { MetadataRoute } from "next";
 // manifest template
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "App Name",
-    short_name: "App Name",
+    name: "Quark Finance",
+    short_name: "Quark",
     start_url: "/",
-    description: "Short Description",
+    description: "The atomic engine for decentralized asset management",
     icons: [
       {
         src: "/android-chrome-192x192.png",
