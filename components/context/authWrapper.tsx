@@ -5,10 +5,11 @@ import { Header } from '@/components/Header';
 
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
   const { user } = useDynamicContext();
+  const existingUser = user ? localStorage.getItem(user.email as string) : null;
 
   return (
     <>
-      {user ? <Header /> : null}
+      {user && existingUser ? <Header /> : null}
       {children}
     </>
   );

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
-import { useTheme } from 'next-themes';
 
 import Meteors from '@/components/ui/meteors';
 
@@ -43,16 +42,15 @@ export default function LandingPage() {
 
   const { user, setShowAuthFlow } = useDynamicContext();
   const router = useRouter();
-  const { theme } = useTheme();
-  const [color, setColor] = useState('#ffffff');
-
-  useEffect(() => {
-    setColor(theme === 'dark' ? '#ffffff' : '#000000');
-  }, [theme]);
 
   useEffect(() => {
     if (user) {
-      router.push('/dashboard');
+      const existingUser = localStorage.getItem(user.email as string);
+      if (existingUser) {
+        router.push('/dashboard');
+      } else {
+        router.push('/profile/complete-profile');
+      }
     }
   }, [user, router]);
 
@@ -70,7 +68,6 @@ export default function LandingPage() {
             alt="Quark Logo"
             width={300}
             height={300}
-            priority
             className="dark:invert dark:drop-shadow-[0_0_0.3rem_#ffffff70]"
           />
         </div>

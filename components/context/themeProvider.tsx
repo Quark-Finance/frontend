@@ -1,36 +1,43 @@
-'use client'
+"use client";
 
 import setGlobalColorTheme from "@/lib/themeColors";
 import { useTheme } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, } from "react";
 
 const ThemeContext = createContext<ThemeColorStateParams>(
-  {} as ThemeColorStateParams
+  {} as ThemeColorStateParams,
 );
 
-export default function ThemeProvider({ children }: ThemeProviderProps) {
+export default function ThemeProvider({
+  children,
+}: ThemeProviderProps) {
   const getSavedThemeColor = () => {
-    if (typeof window !== "undefined") {
-      return (localStorage.getItem("themeColor") as ThemeColors) || "Zinc";
+    try {
+      return (localStorage.getItem("themeColor") as ThemeColors) || "Blue";
+    } catch (error) {
+      "Blue" as ThemeColors;
     }
-    return "Zinc" as ThemeColors;
   };
 
-  const [themeColor, setThemeColor] = useState<ThemeColors>("Zinc" as ThemeColors);
+  const [themeColor, setThemeColor] = useState<ThemeColors>(
+    getSavedThemeColor() as ThemeColors,
+  );
+  const [isMounted, setIsMounted] = useState(false);
   const { theme } = useTheme();
 
   useEffect(() => {
-    const savedColor = getSavedThemeColor();
-    setThemeColor(savedColor);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("themeColor", themeColor);
-    }
+    localStorage.setItem("themeColor", themeColor);
     setGlobalColorTheme(theme as "light" | "dark", themeColor);
+
+    if (!isMounted) {
+      setIsMounted(true);
+    }
   }, [themeColor, theme]);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <ThemeContext.Provider value={{ themeColor, setThemeColor }}>
