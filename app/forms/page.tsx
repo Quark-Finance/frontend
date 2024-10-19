@@ -3,72 +3,72 @@
 import { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { cn } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { CheckCircle2, ChevronRight, ChevronLeft, User, Briefcase } from 'lucide-react'
+import { CheckCircle2, ChevronRight, ChevronLeft, User, TrendingUp, Coins } from 'lucide-react'
+import { questions } from '@/lib/formulaireQuestions'
 
-type FormData = {
-  personalInfo: {
-    firstName: string
-    lastName: string
-    email: string
-  }
-  additionalInfo: {
-    occupation: string
-    bio: string
-    preferredContact: 'email' | 'phone' | 'mail'
-  }
-}
+type FormData = Record<string, string>
 
 const steps = [
-  { id: 'personal', title: 'Personal Information', icon: User },
-  { id: 'additional', title: 'Additional Information', icon: Briefcase },
+  { id: 'personalProfile', title: 'Personal Profile', icon: User },
+  { id: 'investmentPreferences', title: 'Investment Preferences', icon: TrendingUp },
+  { id: 'web3Profile', title: 'Web3 Profile', icon: Coins },
 ]
 
-export default function MultiStepForm() {
-  const [step, setStep] = useState<'personal' | 'additional'>('personal')
+export default function InvestmentProfileForm() {
+  const [step, setStep] = useState(0)
+  const [answers, setAnswers] = useState<Record<string, string>>({})
 
   const form = useForm<FormData>({
-    defaultValues: {
-      personalInfo: {
-        firstName: '',
-        lastName: '',
-        email: '',
-      },
-      additionalInfo: {
-        occupation: '',
-        bio: '',
-        preferredContact: 'email',
-      },
-    },
+    defaultValues: questions.reduce((acc, q) => ({ ...acc, [q.id]: '' }), {}),
   })
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log(data)
-    // Handle form submission here
-  }
+    const updatedAnswers = { ...answers, ...data }
+    setAnswers(updatedAnswers)
 
-  const validatePersonalInfo = async () => {
-    const result = await form.trigger(['personalInfo.firstName', 'personalInfo.lastName', 'personalInfo.email'])
-    if (result) {
-      setStep('additional')
+    const totalScore = questions.reduce((sum, question) => {
+      const selectedOption = question.options.find(option => option.value === updatedAnswers[question.id])
+      return sum + (selectedOption ? selectedOption.score : 0)
+    }, 0)
+
+    const maxScore = questions.length * 5
+    const scorePercentage = (totalScore / maxScore) * 100
+
+    let investorProfile
+    if (scorePercentage < 40) {
+      investorProfile = 'Conservative'
+    } else if (scorePercentage < 70) {
+      investorProfile = 'Moderate'
+    } else {
+      investorProfile = 'Aggressive'
     }
+
+    const qaStructure = questions.reduce((acc, q) => ({
+      ...acc,
+      [q.question]: updatedAnswers[q.id]
+    }), {})
+
+    console.log('Form Data:', data)
+    console.log('Q&A Structure:', qaStructure)
+    console.log('Investor Profile:', investorProfile)
+
+    // Submit data to backend
   }
 
-  const currentStepIndex = steps.findIndex(s => s.id === step)
+  const currentStepIndex = step
   const progress = ((currentStepIndex + 1) / steps.length) * 100
 
   return (
     <div className="container mx-auto py-10">
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Multi-Step Form</CardTitle>
-          <CardDescription>Please fill out the form to complete your registration</CardDescription>
+          <CardTitle>Investment Profile Assessment</CardTitle>
+          <CardDescription>Please answer the following questions to determine your investment profile</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="mb-8">
@@ -92,130 +92,39 @@ export default function MultiStepForm() {
           </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {step === 'personal' && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="personalInfo.firstName"
-                    rules={{ required: 'First name is required', minLength: { value: 2, message: 'First name must be at least 2 characters' } }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>First Name</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="personalInfo.lastName"
-                    rules={{ required: 'Last name is required', minLength: { value: 2, message: 'Last name must be at least 2 characters' } }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Last Name</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="personalInfo.email"
-                    rules={{ required: 'Email is required', pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' } }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input {...field} type="email" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
-              {step === 'additional' && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="additionalInfo.occupation"
-                    rules={{ required: 'Occupation is required', minLength: { value: 2, message: 'Occupation must be at least 2 characters' } }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Occupation</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="additionalInfo.bio"
-                    rules={{ required: 'Bio is required', minLength: { value: 10, message: 'Bio must be at least 10 characters' }, maxLength: { value: 500, message: 'Bio must not exceed 500 characters' } }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Bio</FormLabel>
-                        <FormControl>
-                          <Textarea {...field} />
-                        </FormControl>
-                        <FormDescription>
-                          Tell us a little about yourself (max 500 characters)
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="additionalInfo.preferredContact"
-                    rules={{ required: 'Please select a preferred contact method' }}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred Contact Method</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="flex flex-col space-y-1"
-                          >
-                            <FormItem className="flex items-center space-x-3 space-y-0">
+              {questions.slice(step * 5, (step + 1) * 5).map((q) => (
+                <FormField
+                  key={q.id}
+                  control={form.control}
+                  name={q.id}
+                  rules={{ required: 'This field is required' }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{q.question}</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex flex-col space-y-1"
+                        >
+                          {q.options.map((option) => (
+                            <FormItem key={option.value} className="flex items-center space-x-3 space-y-0">
                               <FormControl>
-                                <RadioGroupItem value="email" />
+                                <RadioGroupItem value={option.value} />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Email
+                                {option.label}
                               </FormLabel>
                             </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="phone" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                Phone
-                              </FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="mail" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                Mail
-                              </FormLabel>
-                            </FormItem>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
+                          ))}
+
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
             </form>
           </Form>
         </CardContent>
@@ -223,24 +132,27 @@ export default function MultiStepForm() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => setStep('personal')}
-            className={cn(step === 'personal' && 'invisible')}
+            onClick={() => setStep(step - 1)}
+            disabled={step === 0}
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
             Previous
           </Button>
           <Button
-            type={step === 'additional' ? 'submit' : 'button'}
+            type={step === steps.length - 1 ? 'submit' : 'button'}
             onClick={() => {
-              if (step === 'personal') {
-                validatePersonalInfo()
+              if (step < steps.length - 1) {
+                form.handleSubmit((data) => {
+                  setAnswers({ ...answers, ...data })
+                  setStep(step + 1)
+                })()
               } else {
                 form.handleSubmit(onSubmit)()
               }
             }}
           >
-            {step === 'additional' ? 'Submit' : 'Next'}
-            {step === 'personal' && <ChevronRight className="w-4 h-4 ml-2" />}
+            {step === steps.length - 1 ? 'Submit' : 'Next'}
+            {step < steps.length - 1 && <ChevronRight className="w-4 h-4 ml-2" />}
           </Button>
         </CardFooter>
       </Card>
