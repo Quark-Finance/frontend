@@ -60,6 +60,19 @@ export default function InvestmentProfileForm() {
     // Submit data to backend
   }
 
+  const testAPI = async () => {
+    console.log('Testing API...')
+    const response = await fetch('/api/generate-score', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message: 'What is the meaning of life?' }),
+    })
+    const data = await response.json()
+    console.log(data)
+  }
+
   const currentStepIndex = step
   const progress = ((currentStepIndex + 1) / steps.length) * 100
 
@@ -153,6 +166,13 @@ export default function InvestmentProfileForm() {
           >
             {step === steps.length - 1 ? 'Submit' : 'Next'}
             {step < steps.length - 1 && <ChevronRight className="w-4 h-4 ml-2" />}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={testAPI}
+          >
+            Test API
           </Button>
         </CardFooter>
       </Card>
