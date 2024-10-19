@@ -4,8 +4,7 @@ import "./globals.css";
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import ThemeProvider from "@/components/context/themeProvider";
 import DynamicProvider from "@/components/context/dynamicProvider";
-
-import { Header } from "@/components/Header";
+import { AuthWrapper } from "@/components/context/authWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -48,8 +47,7 @@ export default function RootLayout({
           <ThemeProvider>
             <DynamicProvider>
               <main className={`${geistSans.variable} ${geistMono.variable} antialiased relative min-h-screen`}>
-                <Header />
-                {children}
+                <AuthWrapper>{children}</AuthWrapper>
               </main>
             </DynamicProvider>
           </ThemeProvider>

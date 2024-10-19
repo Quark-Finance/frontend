@@ -1,140 +1,96 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import { useTheme } from 'next-themes';
+
+import Meteors from '@/components/ui/meteors';
+import Particles from '@/components/ui/particles';
+
+const TypingAnimation = ({ words }: { words: string[] }) => {
+  const [currentWord, setCurrentWord] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const animateText = () => {
+      const word = words[currentIndex % words.length];
+      const shouldDelete = isDeleting ? 1 : -1;
+      setCurrentWord((prev) => word.substring(0, prev.length - shouldDelete));
+
+      if (!isDeleting && currentWord === word) {
+        setTimeout(() => setIsDeleting(true), 1500);
+      } else if (isDeleting && currentWord === '') {
+        setIsDeleting(false);
+        setCurrentIndex((prev) => prev + 1);
+      }
+    };
+
+    const timer = setTimeout(animateText, isDeleting ? 50 : 150);
+    return () => clearTimeout(timer);
+  }, [currentWord, currentIndex, isDeleting, words]);
+
+  return <span className="text-primary">{currentWord}</span>;
+};
+
+export default function LandingPage() {
+  const oneLiners = [
+    'universal liquidity',
+    'Cross-chain DeFi',
+    'Seamless asset management',
+  ];
+
+  const { user, setShowAuthFlow } = useDynamicContext();
+  const router = useRouter();
+  const { theme } = useTheme();
+  const [color, setColor] = useState('#ffffff');
+
+  useEffect(() => {
+    setColor(theme === 'dark' ? '#ffffff' : '#000000');
+  }, [theme]);
+
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
+
+  const handleSignIn = () => {
+    setShowAuthFlow(true);
+  };
+
   return (
-    <main className="flex h-[90vh] flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p
-          className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300
-            bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl
-            dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static
-            lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30 text-primary"
-        >
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div
-          className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t
-            from-white via-white dark:from-black dark:via-black lg:static lg:size-auto
-            lg:bg-none gap-x-1"
-        >
+    <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-background/50 text-foreground">
+      <Meteors number={10} />
+      <Particles
+        className="absolute inset-0"
+        quantity={40}
+        ease={95}
+        color={color}
+        refresh
+      />
+      <div className="z-10 text-center">
+        <div className="flex items-center justify-center mb-2">
+          <Image
+            src="/logo/quark_full_logo_svg.svg"
+            alt="Quark Logo"
+            width={300}
+            height={300}
+            className="dark:invert"
+          />
         </div>
+        <h2 className="text-3xl mb-8">
+          The atomic engine for <TypingAnimation words={oneLiners} />
+        </h2>
+        <button
+          onClick={handleSignIn}
+          className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-full text-lg font-semibold transition-colors"
+        >
+          {user ? 'Go to Dashboard' : 'Let\'s get started'}
+        </button>
       </div>
-
-      <div
-        className="relative z-[-1] flex place-items-center before:absolute before:h-[300px]
-          before:w-full before:-translate-x-1/2 before:rounded-full
-          before:bg-gradient-radial before:from-white before:to-transparent
-          before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px]
-          after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200
-          after:via-blue-200 after:blur-2xl after:content-['']
-          before:dark:bg-gradient-to-br before:dark:from-transparent
-          before:dark:to-primary before:dark:opacity-10 after:dark:from-sky-900
-          after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px]
-          sm:after:w-[240px] before:lg:h-[360px]"
-      >
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div
-        className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4
-          lg:text-left gap-x-2"
-      >
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border bg-card px-5 py-4 transition-colors
-            hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700
-            hover:dark:bg-neutral-800/30 dark:border-white dark:border-opacity-5"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold text-primary">
-            Docs{" "}
-            <span
-              className="inline-block transition-transform group-hover:translate-x-1
-                motion-reduce:transform-none"
-            >
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border bg-card px-5 py-4 transition-colors
-            hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700
-            hover:dark:bg-neutral-800/30 dark:border-white dark:border-opacity-5"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold text-primary">
-            Learn{" "}
-            <span
-              className="inline-block transition-transform group-hover:translate-x-1
-                motion-reduce:transform-none"
-            >
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border bg-card px-5 py-4 transition-colors
-            hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700
-            hover:dark:bg-neutral-800/30 dark:border-white dark:border-opacity-5"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold text-primary">
-            Templates{" "}
-            <span
-              className="inline-block transition-transform group-hover:translate-x-1
-                motion-reduce:transform-none"
-            >
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border bg-card px-5 py-4 transition-colors
-            hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700
-            hover:dark:bg-neutral-800/30 dark:border-white dark:border-opacity-5"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold text-primary">
-            Deploy{" "}
-            <span
-              className="inline-block transition-transform group-hover:translate-x-1
-                motion-reduce:transform-none"
-            >
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
 }
