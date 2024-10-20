@@ -4,13 +4,13 @@ import { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { CheckCircle2, ChevronRight, ChevronLeft, User, Briefcase, Shield, Upload } from 'lucide-react'
+import { CheckCircle2, ChevronRight, ChevronLeft, User, Briefcase, Shield } from 'lucide-react'
 
 type FormData = {
   fullName: string

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { ArrowUpRight, ArrowDownRight, DollarSign, PieChart, Activity, Briefcase, TrendingUp, Wallet, ArrowRight } from 'lucide-react'
+import { ArrowUpRight, ArrowDownRight, DollarSign, Activity, Briefcase, TrendingUp, Wallet, ArrowRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
 

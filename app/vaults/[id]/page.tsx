@@ -15,7 +15,7 @@ import { ManagerSection } from './ManagerSection';
 import Image from 'next/image';
 import { approval, deposit } from '@/lib/deposit';
 import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
-import { getTotalSupply } from '@/lib/getTotalShares';
+// import { getTotalSupply } from '@/lib/getTotalShares';
 
 interface Asset {
   symbol: string;

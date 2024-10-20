@@ -1,11 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DynamicWidget, useDynamicContext, useUserWallets, } from '@dynamic-labs/sdk-react-core';
+import { useDynamicContext, useUserWallets, } from '@dynamic-labs/sdk-react-core';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { Copy, LogOut, Edit2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { shortenAddress } from '@/lib/shortenAddress';

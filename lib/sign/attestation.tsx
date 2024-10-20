@@ -1,6 +1,6 @@
 import { SignProtocolClient, SpMode, EvmChains, IndexService } from "@ethsign/sp-sdk";
 import { privateKeyToAccount } from "viem/accounts";
-import makeAttestationRequest from "./utils";
+// import makeAttestationRequest from "./utils";
 
 const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY as `0x${string}`
 const client = new SignProtocolClient(SpMode.OnChain, {
