@@ -43,19 +43,18 @@ export default function LandingPage() {
   const { user, setShowAuthFlow } = useDynamicContext();
   const router = useRouter();
 
-  useEffect(() => {
-    if (user) {
-      const existingUser = localStorage.getItem(user.email as string);
-      if (existingUser) {
-        router.push('/dashboard');
-      } else {
-        router.push('/profile/complete-profile');
-      }
-    }
-  }, [user, router]);
-
   const handleSignIn = () => {
     setShowAuthFlow(true);
+  };
+
+  const handleButtonClick = () => {
+    if (user) {
+      // If user is logged in, navigate to the vaults page
+      router.push('/vaults');
+    } else {
+      // If not logged in, initiate the sign-in flow
+      handleSignIn();
+    }
   };
 
   return (
@@ -75,10 +74,10 @@ export default function LandingPage() {
           The atomic engine for <TypingAnimation words={oneLiners} />
         </h2>
         <button
-          onClick={handleSignIn}
+          onClick={handleButtonClick}
           className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-full text-lg font-semibold transition-colors"
         >
-          {user ? 'Go to Dashboard' : 'Let\'s get started'}
+          {user ? 'Explore Our Vaults' : "Let's get started"}
         </button>
       </div>
     </div>
