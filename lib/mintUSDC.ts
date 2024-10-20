@@ -1,12 +1,12 @@
 import { createPublicClient, createWalletClient, custom, http } from 'viem';
-import { baseSepolia } from 'viem/chains';
+import { unichainSepolia } from 'viem/chains';
 import { encodeFunctionData } from 'viem/utils';
 
 const INFURA_API = process.env.NEXT_PUBLIC_INFURA_URL
 // Public client for interacting with Arbitrum Sepolia
 const publicClient = createPublicClient({
-  chain: baseSepolia,
-  transport: http(INFURA_API)  // Use the provider from the signer object
+  chain: unichainSepolia,
+  transport: http("https://sepolia.unichain.org")  // Use the provider from the signer object
 });
 
 // Contract details
@@ -28,7 +28,7 @@ export const mintUSDC = async (amount: number, accountAddress: string, signer: a
   try {
     // Create wallet client using viem
     const walletClient = createWalletClient({
-      chain: baseSepolia,
+      chain: unichainSepolia,
       transport: custom(window.ethereum!),  // Use the provider from the signer object
       account: accountAddress as `0x${string}`
     });

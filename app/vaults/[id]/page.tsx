@@ -12,6 +12,8 @@ import { Separator } from '@/components/ui/separator';
 import { Wallet, Users, PieChart, ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
 import { ShortAddressLink } from '@/components/ShortAddressLink';
 import { ManagerSection } from './ManagerSection';
+import { approval, deposit } from '@/lib/deposit';
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 
 interface Asset {
   symbol: string;
@@ -150,27 +152,35 @@ function ChainCard({
 }
 
 function DepositModal() {
-  const [amount, setAmount] = useState('');
-  const [isSigning, setIsSigning] = useState(false);
+  const [amount, setAmount] = useState(0);
+  const [isApproving, setIsSigning] = useState(false);
   const [isDepositing, setIsDepositing] = useState(false);
-
-  const handleSign = () => {
+  const { primaryWallet } = useDynamicContext(); 
+  const accountAddress = primaryWallet!.address;
+  
+  const handleApproval = async () => {
     setIsSigning(true);
-    // Simulate a promise that resolves after 2 seconds
-    new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
-      console.log(`Signing deposit of ${amount}`);
-      setIsSigning(false);
-    });
+    try {
+    console.log(`Approving deposit of ${amount}`);
+    const tx = await approval(amount, accountAddress);
+    setIsSigning(false);
+    } catch(e) {
+      console.log(e);
+      return
+    }
   };
 
-  const handleDeposit = () => {
+  const handleDeposit = async () => {
     setIsDepositing(true);
-    // Simulate a promise that resolves after 2 seconds
-    new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
-      console.log(`Depositing ${amount} into the vault`);
-      setAmount('');
-      setIsDepositing(false);
-    });
+    console.log(`Depositing ${amount} into the vault`);
+    try {
+    const tx = await deposit(amount, accountAddress);
+    setAmount(0);
+    setIsDepositing(false);
+    } catch(e) {
+      console.log(e);
+      return
+    }
   };
 
   return (
@@ -197,21 +207,21 @@ function DepositModal() {
               type="number"
               placeholder="Enter deposit amount"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              disabled={isSigning || isDepositing}
+              onChange={(e) => setAmount(e.target.value as any as number)}
+              disabled={isApproving || isDepositing}
             />
           </div>
           <Button
-            onClick={handleSign}
+            onClick={handleApproval}
             className="w-full"
-            disabled={isSigning || isDepositing || !amount}
+            disabled={isApproving || isDepositing || !amount}
           >
-            {isSigning ? 'Signing...' : 'Sign'}
+            {isApproving ? 'Signing...' : 'Approve'}
           </Button>
           <Button
             onClick={handleDeposit}
             className="w-full"
-            disabled={isSigning || isDepositing || !amount}
+            disabled={isApproving || isDepositing || !amount}
           >
             {isDepositing ? 'Processing...' : 'Confirm Deposit'}
           </Button>
