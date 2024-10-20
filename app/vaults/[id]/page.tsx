@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger, } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
-import { Wallet, Users, PieChart, ChevronDown, ChevronUp, } from 'lucide-react';
+import { Wallet, Users, PieChart, ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
 import { ShortAddressLink } from '@/components/ShortAddressLink';
 import { ManagerSection } from './ManagerSection';
 
@@ -150,10 +151,26 @@ function ChainCard({
 
 function DepositModal() {
   const [amount, setAmount] = useState('');
+  const [isSigning, setIsSigning] = useState(false);
+  const [isDepositing, setIsDepositing] = useState(false);
+
+  const handleSign = () => {
+    setIsSigning(true);
+    // Simulate a promise that resolves after 2 seconds
+    new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
+      console.log(`Signing deposit of ${amount}`);
+      setIsSigning(false);
+    });
+  };
 
   const handleDeposit = () => {
-    console.log(`Depositing ${amount} into the vault`);
-    setAmount('');
+    setIsDepositing(true);
+    // Simulate a promise that resolves after 2 seconds
+    new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
+      console.log(`Depositing ${amount} into the vault`);
+      setAmount('');
+      setIsDepositing(false);
+    });
   };
 
   return (
@@ -181,10 +198,22 @@ function DepositModal() {
               placeholder="Enter deposit amount"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
+              disabled={isSigning || isDepositing}
             />
           </div>
-          <Button onClick={handleDeposit} className="w-full">
-            Confirm Deposit
+          <Button
+            onClick={handleSign}
+            className="w-full"
+            disabled={isSigning || isDepositing || !amount}
+          >
+            {isSigning ? 'Signing...' : 'Sign'}
+          </Button>
+          <Button
+            onClick={handleDeposit}
+            className="w-full"
+            disabled={isSigning || isDepositing || !amount}
+          >
+            {isDepositing ? 'Processing...' : 'Confirm Deposit'}
           </Button>
         </div>
       </DialogContent>
@@ -193,6 +222,7 @@ function DepositModal() {
 }
 
 export default function IndividualVaultPage() {
+  const router = useRouter();
   const valuePerShare = mockVault.totalValue / mockVault.totalShares;
   const userShares = 100000; // Mock user shares, replace with actual user data
   const userValue = userShares * valuePerShare;
@@ -203,18 +233,29 @@ export default function IndividualVaultPage() {
     <div className="mx-auto py-8 px-4 w-full max-w-7xl space-y-12">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
-        <div>
-          <h1 className="text-4xl font-bold text-primary">{mockVault.name}</h1>
-          <div className="flex items-center mt-2">
-            <Badge variant="secondary" className="mr-2">
-              {mockVault.vaultId}
-            </Badge>
-            <span className="text-sm text-muted-foreground">Manager:</span>
-            <ShortAddressLink
-              address={mockVault.managerAddress}
-              chain={'Unichain'}
-              className="ml-1 text-sm text-muted-foreground hover:text-primary"
-            />
+        <div className="flex items-center space-x-4">
+          {/* Go Back Button */}
+          <Button
+            variant="ghost"
+            size={'icon'}
+            onClick={() => router.back()}
+            className="p-0 h-auto w-auto"
+          >
+            <ArrowLeft className="h-6 w-6 text-primary" />
+          </Button>
+          <div>
+            <h1 className="text-4xl font-bold text-primary">{mockVault.name}</h1>
+            <div className="flex items-center mt-2">
+              <Badge variant="secondary" className="mr-2">
+                {mockVault.vaultId}
+              </Badge>
+              <span className="text-sm text-muted-foreground">Manager:</span>
+              <ShortAddressLink
+                address={mockVault.managerAddress}
+                chain={'Unichain'}
+                className="ml-1 text-sm text-muted-foreground hover:text-primary"
+              />
+            </div>
           </div>
         </div>
         <DepositModal />

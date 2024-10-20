@@ -6,6 +6,7 @@ import ThemeProvider from '@/components/context/themeProvider';
 import DynamicProvider from '@/components/context/dynamicProvider';
 import { AuthWrapper } from '@/components/context/authWrapper';
 import Particles from '@/components/ui/particles';
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -73,6 +74,7 @@ export default function RootLayout({
                 <div className="relative z-10">
                   <AuthWrapper>{children}</AuthWrapper>
                 </div>
+                <Toaster />
               </main>
             </DynamicProvider>
           </ThemeProvider>
