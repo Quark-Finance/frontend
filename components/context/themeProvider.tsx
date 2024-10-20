@@ -16,7 +16,8 @@ export default function ThemeProvider({
     try {
       return (localStorage.getItem("themeColor") as ThemeColors) || "Blue";
     } catch (error) {
-      "Blue" as ThemeColors;
+      console.error(error);
+      return "Blue" as ThemeColors;
     }
   };
 

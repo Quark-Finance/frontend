@@ -54,7 +54,11 @@ export default function QuarkLendPage() {
       console.log(`Confirming ${action} of ${amount} USDC ${action === 'supply' ? 'to' : 'from'} vault ${selectedVault?.name}`)
       setIsConfirming(false)
       setAmount('')
-      action === 'supply' ? setIsSupplyModalOpen(false) : setIsBorrowModalOpen(false)
+      if (action === 'supply') {
+        setIsSupplyModalOpen(false);
+      } else {
+        setIsBorrowModalOpen(false);
+      }
     }, 2000)
   }
 
