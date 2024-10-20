@@ -1,15 +1,16 @@
-import { createPublicClient, createWalletClient, http } from 'viem';
-import { arbitrumSepolia } from 'viem/chains';
+import { createPublicClient, createWalletClient, custom, http } from 'viem';
+import { baseSepolia } from 'viem/chains';
 import { encodeFunctionData } from 'viem/utils';
 
+const INFURA_API = process.env.NEXT_PUBLIC_INFURA_URL
 // Public client for interacting with Arbitrum Sepolia
 const publicClient = createPublicClient({
-  chain: arbitrumSepolia,
-  transport: http(),
+  chain: baseSepolia,
+  transport: http(INFURA_API)  // Use the provider from the signer object
 });
 
 // Contract details
-const contractAddress = "0x7F9a3050a572CF5198B7f61e6d9203B532072692";
+const contractAddress = "0xbd856Ea0F5Acc0C1aF74B2b829c71940722850EF";
 const contractABI = [
   {
     name: "mint",
@@ -27,9 +28,9 @@ export const mintUSDC = async (amount: number, accountAddress: string, signer: a
   try {
     // Create wallet client using viem
     const walletClient = createWalletClient({
-      chain: arbitrumSepolia,
-      transport: http(),  // Use the provider from the signer object
-      account: accountAddress as `0x${string}`,
+      chain: baseSepolia,
+      transport: custom(window.ethereum!),  // Use the provider from the signer object
+      account: accountAddress as `0x${string}`
     });
     
     const [account] = await walletClient.getAddresses();
