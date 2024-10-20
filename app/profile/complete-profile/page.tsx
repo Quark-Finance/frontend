@@ -19,6 +19,20 @@ export default function CompleteProfile() {
     router.push(`/profile/complete-profile/${userType}`);
   };
 
+  // change it later to send info to backend (for now just store in localstorage)
+  const addUserToSystem = (userType: 'manager' | 'investor') => {
+    const existingUser = localStorage.getItem(user.email as string);
+    if (existingUser) {
+      router.push('/dashboard');
+    } else {
+      const newUser = {
+        userType,
+      };
+      localStorage.setItem(user.email as string, JSON.stringify(newUser));
+      router.push('/dashboard');
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background/20 backdrop-blur-sm text-foreground p-4">
       <div className="w-full max-w-4xl">
@@ -36,7 +50,8 @@ export default function CompleteProfile() {
           {/* Manager Card */}
           <Card
             className="cursor-pointer transition-all duration-300 hover:scale-105 bg-card/50 rounded-xl border border-primary/5 hover:border-primary hover:shadow-[0_0_20px_hsl(var(--primary))]"
-            onClick={() => handleUserTypeSelection('manager')}
+            // onClick={() => handleUserTypeSelection('manager')} // COMMENTED FOR NOW
+            onClick={() => addUserToSystem('manager')} 
           >
             <CardContent className="flex flex-col items-center justify-center p-8 h-full">
               <UserCog className="w-24 h-24 mb-4 text-primary" />
