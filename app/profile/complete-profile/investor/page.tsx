@@ -10,7 +10,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from '@/components/ui/progress'
 import { CheckCircle2, ChevronRight, ChevronLeft, User, TrendingUp, Coins } from 'lucide-react'
 import { questions } from '@/lib/formulaireQuestions'
-
+import { createRiskProfileAttestation } from "@/lib/sign/attestation";
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 type FormData = Record<string, string>
 
 const steps = [
@@ -20,6 +21,10 @@ const steps = [
 ]
 
 export default function InvestmentProfileForm() {
+  const { user } = useDynamicContext();
+
+  const verifiedCredentialsArray = user?.verifiedCredentials as any;
+
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
 
@@ -56,7 +61,7 @@ export default function InvestmentProfileForm() {
     console.log('Form Data:', data)
     console.log('Q&A Structure:', qaStructure)
     console.log('Investor Profile:', investorProfile)
-
+    createRiskProfileAttestation("0x02f37D3C000Fb5D2A824a3dc3f1a29fa5530A8D4", ["ageGroup", "investmentGoals", "riskTolerance", "investmentHorizon", "incomeStability", "investmentKnowledge", "portfolioAllocation", "marketDownturn", "emergencyFund", "retirementPlanning", "cryptoExperience", "defiKnowledge", "nftInterest", "web3Adoption"], Math.floor(scorePercentage));
     // Submit data to backend
   }
 
