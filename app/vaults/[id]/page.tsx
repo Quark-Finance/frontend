@@ -14,6 +14,7 @@ import { ShortAddressLink } from '@/components/ShortAddressLink';
 import { ManagerSection } from './ManagerSection';
 import { approval, deposit } from '@/lib/deposit';
 import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import { getTotalSupply } from '@/lib/getTotalShares';
 
 interface Asset {
   symbol: string;
@@ -233,8 +234,15 @@ function DepositModal() {
 
 export default function IndividualVaultPage() {
   const router = useRouter();
+  const { primaryWallet } = useDynamicContext(); 
+  const accountAddress = primaryWallet!.address;
+  // const totalShares = getTotalSupply(tokenAddress)
+  // const userShares = await getBalance(accountAddress, tokenAddress); // Mock user shares, replace with actual user data
+  // const valuePerShare = totalValue / totalShares;
   const valuePerShare = mockVault.totalValue / mockVault.totalShares;
   const userShares = 100000; // Mock user shares, replace with actual user data
+  
+  
   const userValue = userShares * valuePerShare;
 
   const isManager = true; // Mock manager status, replace with actual user data

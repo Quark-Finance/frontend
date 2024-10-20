@@ -2,7 +2,6 @@ import { createPublicClient, createWalletClient, custom, http } from 'viem';
 import { unichainSepolia } from 'viem/chains';
 import { encodeFunctionData } from 'viem/utils';
 
-const INFURA_API = process.env.NEXT_PUBLIC_INFURA_URL
 // Public client for interacting with Arbitrum Sepolia
 const publicClient = createPublicClient({
   chain: unichainSepolia,
