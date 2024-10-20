@@ -23,13 +23,15 @@ export default function CompleteProfile() {
   const addUserToSystem = (userType: 'manager' | 'investor') => {
     const existingUser = localStorage.getItem(user.email as string);
     if (existingUser) {
-      router.push('/dashboard');
+      // router.push('/dashboard');
+      window.location.href = '/dashboard';
     } else {
       const newUser = {
         userType,
       };
       localStorage.setItem(user.email as string, JSON.stringify(newUser));
-      router.push('/dashboard');
+      // router.push('/dashboard');
+      window.location.href = '/dashboard';
     }
   }
 

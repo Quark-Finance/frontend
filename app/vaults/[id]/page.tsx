@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { Wallet, Users, PieChart, ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
 import { ShortAddressLink } from '@/components/ShortAddressLink';
 import { ManagerSection } from './ManagerSection';
+import Image from 'next/image';
 import { approval, deposit } from '@/lib/deposit';
 import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { getTotalSupply } from '@/lib/getTotalShares';
@@ -108,20 +109,29 @@ function ChainCard({
       >
         <CollapsibleTrigger asChild>
           <CardHeader className="flex flex-row items-center justify-between cursor-pointer">
-            <div>
-              <CardTitle
-                className={`text-lg font-semibold ${isHubChain ? 'text-primary' : ''
-                  }`}
-              >
-                {chain.chain}
-              </CardTitle>
-              <CardDescription>
-                <ShortAddressLink
-                  address={chain.address}
-                  chain={chain.chain}
-                  className="text-sm text-muted-foreground hover:text-primary"
-                />
-              </CardDescription>
+            <div className="flex items-center space-x-4">
+              <Image
+                src={`/icons/chain/${chain.chain.toLowerCase()}.png`}
+                alt={`${chain.chain} logo`}
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+              <div>
+                <CardTitle
+                  className={`text-lg font-semibold ${isHubChain ? 'text-primary' : ''
+                    }`}
+                >
+                  {chain.chain}
+                </CardTitle>
+                <CardDescription>
+                  <ShortAddressLink
+                    address={chain.address}
+                    chain={chain.chain}
+                    className="text-sm text-muted-foreground hover:text-primary"
+                  />
+                </CardDescription>
+              </div>
             </div>
             {isOpen ? (
               <ChevronUp className="h-4 w-4 text-muted-foreground" />

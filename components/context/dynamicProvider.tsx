@@ -14,6 +14,8 @@ import { StarknetWalletConnectors } from "@dynamic-labs/starknet";
 import { FlowWalletConnectors } from "@dynamic-labs/flow";
 
 import { useTheme } from "next-themes";
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 const config = createConfig({
   chains: [mainnet],
@@ -27,6 +29,8 @@ const queryClient = new QueryClient();
 
 export default function DynamicProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme() as { theme: ThemeData | undefined };
+  const router = useRouter();
+  const { toast } = useToast();
 
   return (
     <DynamicContextProvider
@@ -41,17 +45,24 @@ export default function DynamicProvider({ children }: { children: React.ReactNod
           FlowWalletConnectors,
           StarknetWalletConnectors,
         ],
-        newToWeb3WalletChainMap: {
-          primary_chain: 'flow',
-          wallets: {
-            flow: 'blocto',
-            solana: 'glow',
+        recommendedWallets: [
+          { walletKey: "coinbase", label: "Popular" },
+          { walletKey: "metamask" },
+        ],
+        events: {
+          onAuthSuccess: () => {
+            toast({
+              title: 'Authentication successful',
+            });
+            router.push('/profile/complete-profile');
+          },
+          onAuthFailure: () => {
+            toast({
+              title: 'Authentication failed',
+              description: 'Please try again',
+            });
           },
         },
-        recommendedWallets: [
-          { walletKey: "phantomevm", label: "Popular" },
-          { walletKey: "okxwallet" },
-        ],
       }}
     >
       <WagmiProvider config={config}>

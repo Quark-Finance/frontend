@@ -60,7 +60,7 @@ export default function QuarkLendPage() {
 
   return (
     <div className="container mx-auto py-8 px-4 w-[80%]">
-      <h1 className="text-4xl font-bold mb-8 text-primary">Lend Assets</h1>
+      <h1 className="text-4xl font-bold mb-8 text-primary">QUARK Lend</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {vaults.map((vault, index) => (
           <Card key={index} className="hover:shadow-lg transition-shadow duration-200">
@@ -113,7 +113,7 @@ export default function QuarkLendPage() {
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Borrow USDC from {selectedVault?.name}</DialogTitle>
+                      <DialogTitle>Borrow from {selectedVault?.name}</DialogTitle>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-4 items-center gap-4">
