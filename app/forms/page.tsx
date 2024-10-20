@@ -32,7 +32,7 @@ export default function InvestmentProfileForm() {
     defaultValues: questions.reduce((acc, q) => ({ ...acc, [q.id]: '' }), {}),
   })
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     const updatedAnswers = { ...answers, ...data }
     setAnswers(updatedAnswers)
     
@@ -42,7 +42,7 @@ export default function InvestmentProfileForm() {
     }, 0)
 
     const maxScore = questions.length * 5
-    const scorePercentage = (totalScore / maxScore) * 100
+    let scorePercentage = (totalScore / maxScore) * 100
 
     let investorProfile
     if (scorePercentage < 40) {
@@ -60,24 +60,46 @@ export default function InvestmentProfileForm() {
 
     console.log('Form Data:', data)
     console.log('Q&A Structure:', qaStructure)
+    const RP = await RiskProfileGenerator(qaStructure)
     console.log('Investor Profile:', investorProfile)
     createRiskProfileAttestation("0x02f37D3C000Fb5D2A824a3dc3f1a29fa5530A8D4", ["ageGroup", "investmentGoals", "riskTolerance", "investmentHorizon", "incomeStability", "investmentKnowledge", "portfolioAllocation", "marketDownturn", "emergencyFund", "retirementPlanning", "cryptoExperience", "defiKnowledge", "nftInterest", "web3Adoption"], Math.floor(scorePercentage));
     // Submit data to backend
   }
 
-  const testAPI = async () => {
-    console.log('Testing API...')
+  const RiskProfileGenerator = async (qaStructure: any) => {
+    console.log('Generating Risk Profile...')
     const response = await fetch('/api/generate-score', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: 'What is the meaning of life?' }),
-    })
-    const data = await response.json()
-    console.log(data)
-  }
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: `
+        We have collected responses from an investor risk and profile assessment questionnaire. Each response corresponds to a score that reflects the investor's risk tolerance, investment goals, knowledge, and experience with modern technologies like cryptocurrency and DeFi. 
 
+        Here are the questions and the user's selected answers:
+        ${JSON.stringify(qaStructure, null, 2)}
+
+        Each question has been assigned a score (ranging from 1 to 5) that reflects how conservative or aggressive the investor is. The total possible score is 65, and the actual score should be calculated by summing up the scores of the selected answers.
+
+        Please calculate:
+        1. The total score based on the selected answers.
+        2. The percentage score by dividing the actual score by the total possible score (65) and multiplying by 100.
+        3. Based on the percentage score, provide a brief risk profile interpretation:
+          - 0-20%: Very conservative investor with low risk tolerance.
+          - 21-40%: Conservative investor with moderate risk tolerance.
+          - 41-60%: Balanced investor, comfortable with both risk and stability.
+          - 61-80%: Growth-oriented investor, willing to take on higher risks for higher returns.
+          - 81-100%: Aggressive or speculative investor, seeks maximum returns and is comfortable with high volatility.
+          
+        Use this information to generate a scorePercentage and think using a detailed interpretation of the investor's risk profile but return only a number (from 0% to 100%) don't respond with text just a single raw number.
+      `
+    }),
+  });
+    const data = await response.json();
+    console.log(data);
+    return data;
+  }
   const currentStepIndex = step
   const progress = ((currentStepIndex + 1) / steps.length) * 100
 
@@ -171,13 +193,6 @@ export default function InvestmentProfileForm() {
           >
             {step === steps.length - 1 ? 'Submit' : 'Next'}
             {step < steps.length - 1 && <ChevronRight className="w-4 h-4 ml-2" />}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={testAPI}
-          >
-            Test API
           </Button>
         </CardFooter>
       </Card>
