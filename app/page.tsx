@@ -50,7 +50,7 @@ export default function LandingPage() {
   const handleButtonClick = () => {
     if (user) {
       // If user is logged in, navigate to the vaults page
-      router.push('/vaults');
+      router.push('/dashboard');
     } else {
       // If not logged in, initiate the sign-in flow
       handleSignIn();

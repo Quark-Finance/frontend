@@ -270,7 +270,7 @@ export default function InvestmentProfileForm() {
                 {investorProfile}
               </p>
               <DialogFooter>
-                <Button onClick={() => router.push('/dashboard')}>
+                <Button onClick={() => window.location.href = '/dashboard'}>
                   Go to Dashboard
                 </Button>
               </DialogFooter>
